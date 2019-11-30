@@ -5,7 +5,7 @@ import zmq
 
 
 #Esta classe abstrai um socket PUB do pacote zeroMQ e espera uma arquitetura publish-subscribe estendida com um proxy
-class smartLock:
+class SensorMovimento:
 
     #referência ao socket deste publisher
     # socket = -1

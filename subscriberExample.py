@@ -1,7 +1,7 @@
 import publishSubscribe
 
 #exemplo de uso da classe Subscriber
-#cria uma classe concreta chamada MySubscriber que herda da classe abstrada Subscriber e sobrescreve a função messageReceived
+#cria uma classe concreta chamada MySubscriber que herda da classe abstrata Subscriber e sobrescreve a função messageReceived
 #espera receber 5 mensagens com prefixo prefix1, prefix2 ou prefix3 e então termina
 
 class MySubscriber(publishSubscribe.Subscriber):

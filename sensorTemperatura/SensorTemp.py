@@ -3,9 +3,7 @@ import sys
 import publishSubscribe
 import zmq
 
-
-#Esta classe abstrai um socket PUB do pacote zeroMQ e espera uma arquitetura publish-subscribe estendida com um proxy
-class sensorTemp:
+class SensorTemp:
 
     #referência ao socket deste publisher
     # socket = -1
