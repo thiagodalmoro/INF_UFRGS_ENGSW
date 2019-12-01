@@ -1,4 +1,4 @@
-from sensorSimulation.Sensor import Sensor
+from simulation.Sensor import Sensor
 
 
 class RetrieveSensorData:
