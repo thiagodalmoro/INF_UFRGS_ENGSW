@@ -3,9 +3,9 @@ from simulation.Sensor import Sensor
 
 class RetrieveSensorData:
 
-    def __init__(self, sensor_id):
-        self.__sensor_id = sensor_id
-        self.__sensor = Sensor(sensor_id)
+    def __init__(self, sensorID):
+        self.__sensorID = sensorID
+        self.__sensor = Sensor(sensorID, "temp")
 
-    def get_data_from_sensor(self):
-        return self.__sensor.get_sensor_data()
+    def getDataFromSensor(self):
+        return self.__sensor.getSensorData()

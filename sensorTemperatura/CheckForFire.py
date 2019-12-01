@@ -3,13 +3,13 @@ from sensorTemperatura import RetrieveSensorData
 
 class CheckForFire:
 
-    def __init__(self, sensor_id):
-        self.__sensor_id = sensor_id
-        self.__retrieveSensorData = RetrieveSensorData(sensor_id)
+    def __init__(self, sensorID):
+        self.__sensorID = sensorID
+        self.__retrieveSensorData = RetrieveSensorData(sensorID)
 
     def detectFire(self):
-        sensor_data = self.__retrieveSensorData.get_data_from_sensor()
-        if sensor_data > 500:
+        sensorData = self.__retrieveSensorData.getDataFromSensor()
+        if sensorData > 500:
             return True
         else:
             return False
