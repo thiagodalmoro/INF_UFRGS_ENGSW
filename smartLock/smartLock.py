@@ -1,27 +1,72 @@
-import time
-import sys
+from tkinter import *
+from threading import Thread
 import publishSubscribe
-import zmq
 
+isLocked = False
 
-#Esta classe abstrai um socket PUB do pacote zeroMQ e espera uma arquitetura publish-subscribe estendida com um proxy
-class smartLock:
+class SmartlockSubscriber(publishSubscribe.Subscriber):
+    
+    def __init__(self, prefixesList, port, master=None):
+        self.socketInit(prefixesList, port)
 
-    #referência ao socket deste publisher
-    # socket = -1
+    def messageReceived(self, message):
+        global isLocked
+        messageArray = message.split()
 
-    #construtor da classe, apenas inicializa o socket
-    def __init__(self, proxyPort):
-        self.socketInit(proxyPort)
+        if(messageArray[0] == "[Camera]" or messageArray[0] == "[MovementSensor]"):
+            isLocked = True
+        else:
+            lockState = str(messageArray[1])[2:3]
+            if(lockState == "0"):
+                isLocked = False
+            else:
+                isLocked = True
+        
 
+class SubscriberThread(Thread):
+    subscriber:SmartlockSubscriber
 
-    #Inicializa o socket deste publisher, dada a porta onde estará o proxy (ver classe Proxy em ./proxy.py)
-    def socketInit(self, proxyPort):
-        context = zmq.Context()                                 #referencia ao contexto atual, necessária pra criar um novo socket
-        self.socket = context.socket(zmq.PUB)                   #criação de um socket do tipo PUB (pois ele será quem publica as atualizações)
-        self.socket.connect("tcp://localhost:%d" % proxyPort)   #conecta este socket ao proxy (ver classe Proxy em ./proxy.py)
+    def __init__(self):
+        self.subscriber = SmartlockSubscriber(["[SmartlockConfig]", "[Camera]", "[MovementSensor]"], 5555)
+        Thread.__init__(self)
 
+    def run(self):
+        while True:
+            self.subscriber.waitForMessage()
 
-    #publica a mensagem message no socket deste publisher
-    def publish(self, message):
-        self.socket.send(b"%s" % message)
+class Application(Frame):
+
+    subThread:SubscriberThread
+    thisMaster = ""
+    msg = ""
+
+    def __init__(self, master=None):
+        
+        self.subThread = SubscriberThread()
+        self.subThread.start()
+        self.thisMaster = master
+
+        self.widget = Frame(master)
+        self.widget.pack()
+        self.msg = Label(self.widget, text="Smartlock destrancada")
+        self.msg.pack ()
+
+        master.after(1000, self.updateLockStateText)
+
+    def updateLockStateText(self):
+        global isLocked
+        if(isLocked):
+            self.msg["text"]="Smartlock trancada"
+        else:
+             self.msg["text"]="Smartlock destrancada"
+
+        self.thisMaster.after(1000, self.updateLockStateText)
+
+if len(sys.argv) > 1:
+    roomNumber = sys.argv[1]
+
+root = Tk()
+root.title("SMARTLOCK")
+root.geometry("300x50")
+Application(root)
+root.mainloop()
