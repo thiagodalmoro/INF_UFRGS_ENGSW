@@ -1,0 +1,2 @@
+cd sensor_precipitacao
+py RainSensorEmulatorUI.py

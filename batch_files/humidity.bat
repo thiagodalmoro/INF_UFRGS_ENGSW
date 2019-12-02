@@ -1,0 +1,2 @@
+cd sensor_umidade
+py HumiditySensorEmulatorUI.py
