@@ -7,3 +7,4 @@ start /B batch_files\humidity.bat
 start /B batch_files\rain.bat
 start /B batch_files\temperature.bat
 start /B batch_files\smartlock.bat
+start /B batch_files\aplicativo.bat

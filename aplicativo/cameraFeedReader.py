@@ -4,7 +4,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import pickle
 
-currentFrame:Image = Image.open("camera/cameraFrameNoIntruder.jpg")
+currentFrame:Image = Image.open("../camera/cameraFrameNoIntruder.jpg")
 
 class MySubscriber(publishSubscribe.Subscriber):
     
@@ -31,15 +31,18 @@ class SubscriberThread(Thread):
         while True:
             self.subscriber.waitForMessage()
 
-class Application(Frame):
+class CameraFeedReader(Frame):
     subthread:SubscriberThread
     thisMaster = ""
-    
+    thisPublisher:publishSubscribe.Publisher
+
+
     def __init__(self, master=None):
         
         global currentFrame
 
         self.thisMaster = master
+        self.thisPublisher = publishSubscribe.Publisher(5557)
 
         self.subthread = SubscriberThread()
         self.subthread.start()
@@ -49,25 +52,22 @@ class Application(Frame):
 
         frame = ImageTk.PhotoImage(currentFrame)
 
-        self.panel = Label(root, image=frame)
+        self.panel = Label(master, image=frame)
         self.panel.configure(image=frame)
         self.panel.image = frame
         self.panel.pack(side="bottom", fill="both", expand="yes")
+        master.after(500, self.requestFrame)
+        master.after(1000, self.updateFrame)
 
-        master.after(1000, self.teste)
+    def requestFrame(self):
+        self.thisPublisher.publish(b"[CameraFeed]")
+        self.thisMaster.after(500, self.requestFrame)
 
-    def teste(self):
-
+    def updateFrame(self):
         global currentFrame
 
         frame = ImageTk.PhotoImage(currentFrame)
 
         self.panel.configure(image=frame)
         self.panel.image = frame
-        self.thisMaster.after(1000, self.teste)
-
-root = Tk()
-root.title("TESTE CAMERA")
-root.geometry("400x400")
-Application(root)
-root.mainloop()
+        self.thisMaster.after(1000, self.updateFrame)

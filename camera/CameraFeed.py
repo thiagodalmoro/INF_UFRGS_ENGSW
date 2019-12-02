@@ -27,7 +27,6 @@ class CameraFeedPublisher():
         }
 
         messageString = pickle.dumps(message)
-
         self.publisherInstance.publish((b"[CameraFeed] "+messageString))
 
 

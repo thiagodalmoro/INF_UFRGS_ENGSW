@@ -1,27 +1,29 @@
-import time
-import sys
 import publishSubscribe
-import zmq
+from threading import Thread
+from tkinter import *
+from PIL import ImageTk, Image
+import pickle
+from cameraFeedReader import CameraFeedReader
+from alertModeConfig import AlertModeConfig
+from badWeatherReader import BadWeatherReader
+
+class Application:
+    def __init__(self, master):
+        self.master = master
+        self.newWindow = Toplevel(self.master)
+        self.cameraFeed = CameraFeedReader(self.newWindow)
+        self.newerWindow = Toplevel(self.master)
+        self.alertConfig = AlertModeConfig(self.newerWindow)
+        self.newererWindow = Toplevel(self.master)
+        self.badWeather = BadWeatherReader(self.newererWindow)
 
 
-#Esta classe abstrai um socket PUB do pacote zeroMQ e espera uma arquitetura publish-subscribe estendida com um proxy
-class smartLock:
-
-    #referência ao socket deste publisher
-    # socket = -1
-
-    #construtor da classe, apenas inicializa o socket
-    def __init__(self, proxyPort):
-        self.socketInit(proxyPort)
+root = Tk()
+root.title("APLICATIVO")
+root.geometry("400x400")
+Application(root)
+root.mainloop()
 
 
-    #Inicializa o socket deste publisher, dada a porta onde estará o proxy (ver classe Proxy em ./proxy.py)
-    def socketInit(self, proxyPort):
-        context = zmq.Context()                                 #referencia ao contexto atual, necessária pra criar um novo socket
-        self.socket = context.socket(zmq.PUB)                   #criação de um socket do tipo PUB (pois ele será quem publica as atualizações)
-        self.socket.connect("tcp://localhost:%d" % proxyPort)   #conecta este socket ao proxy (ver classe Proxy em ./proxy.py)
 
 
-    #publica a mensagem message no socket deste publisher
-    def publish(self, message):
-        self.socket.send(b"%s" % message)

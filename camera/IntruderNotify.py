@@ -18,7 +18,6 @@ class IntruderNotify(Thread):
     def notifyIntruder(self):
         while True:
             if self.intruderChecker.detectIntruder():
-                print("INTRUSO")
                 self.publisherInstance.publish(b"[Camera] INTRUSO DETECTADO")
 
     def simulate_toggleIntruder(self):
