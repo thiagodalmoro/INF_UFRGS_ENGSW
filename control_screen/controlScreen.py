@@ -3,9 +3,21 @@ from threading import Thread
 from tkinter import *
 from PIL import ImageTk, Image
 import pickle
+import cv2
+
+
+
+def rescale (frame, percent):
+
+    frame_width = int(frame.shape[1] * percent/ 100)
+    frame_height = int(frame.shape[0] * percent/ 100)
+    tamanho = (frame_width, frame_height)
+    frame_rescale = cv2.resize(frame, tamanho, interpolation=cv2.INTER_AREA)
+    return frame_rescale
 
 normalControlScreen = Image.open("normalControlScreen.jpg")
 currentFrame:Image = normalControlScreen
+
 
 class ControlScreenSubscriber(publishSubscribe.Subscriber):
     
